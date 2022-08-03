@@ -284,6 +284,8 @@ func GetRemote(requestedURL string) (*http.Response, error) {
 
 	if response.StatusCode == 200 {
 		promCounters["REMOTE_OK"].Inc()
+		duration := time.Since(before).Seconds()
+		olo.Debug("GETing " + requestedURL + " took " + strconv.FormatFloat(duration, 'f', 5, 64) + "s")
 		err = cache.put(requestedURL, &reader, response.ContentLength)
 		if err != nil {
 			return response, err
@@ -294,6 +296,4 @@ func GetRemote(requestedURL string) (*http.Response, error) {
 		promCounters["REMOTE_ERRORS"].Inc()
 		return response, errors.New("GET " + requestedURL + " returned " + strconv.Itoa(response.StatusCode))
 	}
-	duration := time.Since(before).Seconds()
-	olo.Debug("GETing " + requestedURL + " took " + strconv.FormatFloat(duration, 'f', 5, 64) + "s")
 }
