@@ -168,7 +168,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		handleError(nil, err, w)
 		return
 	}
-	olo.Info("Incoming request '%s' from '%s' on '%s'", r.URL.Path, requesterIP, r.Host)
+	olo.Info("Incoming request '%s' from '%s' on '%s'", r.URL.String(), requesterIP, r.Host)
 	if r.Method != "GET" && r.Method != "HEAD" && r.Method != "PATCH" {
 		olo.Warn("Incoming nonGET HTTP request '%s' from '%s' on '%s'", r.URL.Path, requesterIP, r.Host)
 		errorMessage := fmt.Sprintf("HTTP method '%s' other than GET, HEAD or PATCH not allowed for '%s' from '%s' on '%s'", r.Method, r.URL, requesterIP, r.Host)
@@ -200,7 +200,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	cacheURL := strings.TrimLeft(r.URL.Path, "/")
+	cacheURL := strings.TrimLeft(r.URL.String(), "/")
 	err = validateCacheURL(cacheURL)
 	if err != nil {
 		handleError(nil, err, w)
