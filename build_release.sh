@@ -28,6 +28,7 @@ git push
 test -z ${GITHUB_TOKEN} || echo "creating github release v${1}"
 test -z ${GITHUB_TOKEN} && echo "skipping github-release as GITHUB_TOKEN is not set" || github-release release  --user xorpaul --repo ${projectname} --tag v${1} --name "v${1}" --description "${2}"
 
+export CGO_ENABLED=0
 upx=`which upx`
 
 ### MACOS ###
@@ -44,7 +45,7 @@ github-release upload --user xorpaul --repo ${projectname} --tag v${1} --name "$
 
 ### LINUX ###
 echo "building and uploading ${projectname}-linux-amd64"
-BUILDTIME=$(date -u '+%Y-%m-%d_%H:%M:%S') BUILDVERSION=$(git describe --tags) && go build -race -ldflags "-X main.buildtime=$BUILDTIME_v${1} -X main.buildversion=${BUILDVERSION}" && date 
+BUILDTIME=$(date -u '+%Y-%m-%d_%H:%M:%S') BUILDVERSION=$(git describe --tags) && go build -ldflags "-X main.buildtime=$BUILDTIME_v${1} -X main.buildversion=${BUILDVERSION}" && date 
 test -e /etc/os-release && ./${projectname} --version
 if [ ${#upx} -gt 0 ]; then
   $upx ${projectname}
