@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"regexp"
@@ -273,8 +274,21 @@ func GetRemote(requestedURL string) (*http.Response, error) {
 	req.Header.Set("User-Agent", "https://github.com/xorpaul/tinyproxy/")
 	req.Header.Set("Connection", "keep-alive")
 
+	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
+	// fixes unresponsive sockets that lead to too many open files errors and service outage
+	var netTransport = &http.Transport{
+		Dial: (&net.Dialer{
+			Timeout: 15 * time.Second,
+		}).Dial,
+		TLSHandshakeTimeout: 15 * time.Second,
+	}
+	var netClient = &http.Client{
+		Timeout:   time.Second * 60,
+		Transport: netTransport,
+	}
+
 	before := time.Now()
-	response, err := client.Do(req)
+	response, err := netClient.Do(req)
 	if err != nil {
 		return response, err
 	}
