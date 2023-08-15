@@ -92,12 +92,21 @@ func prepare() {
 		olo.Fatal("Could not init cache: '%s'", err.Error())
 	}
 
-	client = &http.Client{
-		Timeout: time.Second * 120,
+	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
+	// fixes unresponsive sockets that lead to too many open files errors and service outage
+	var netTransport = &http.Transport{
+		Dial: (&net.Dialer{
+			Timeout: 15 * time.Second,
+		}).Dial,
+		TLSHandshakeTimeout: 15 * time.Second,
+	}
+	if len(config.Proxy) > 0 {
+		netTransport.Proxy = http.ProxyURL(config.ProxyURL)
 	}
 
-	if len(config.Proxy) > 0 {
-		client = &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(config.ProxyURL)}}
+	client = &http.Client{
+		Timeout:   time.Minute * 3,
+		Transport: netTransport,
 	}
 
 	promCounters = make(map[string]prometheus.Counter)
@@ -274,21 +283,8 @@ func GetRemote(requestedURL string) (*http.Response, error) {
 	req.Header.Set("User-Agent", "https://github.com/xorpaul/tinyproxy/")
 	req.Header.Set("Connection", "keep-alive")
 
-	// https://medium.com/@nate510/don-t-use-go-s-default-http-client-4804cb19f779
-	// fixes unresponsive sockets that lead to too many open files errors and service outage
-	var netTransport = &http.Transport{
-		Dial: (&net.Dialer{
-			Timeout: 15 * time.Second,
-		}).Dial,
-		TLSHandshakeTimeout: 15 * time.Second,
-	}
-	var netClient = &http.Client{
-		Timeout:   time.Second * 60,
-		Transport: netTransport,
-	}
-
 	before := time.Now()
-	response, err := netClient.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
 		return response, err
 	}
