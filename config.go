@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-	"io/ioutil"
 	"net"
 	"net/url"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -23,6 +23,7 @@ type Config struct {
 	Timeout                    int      `yaml:"timeout_in_s"`
 	ProxyNetworkStrings        []string `yaml:"reverse_proxy_networks"`
 	ProxyNetworks              []net.IPNet
+	NoSSL                      bool                    `yaml:"no_ssl"`
 	PrivateKey                 string                  `yaml:"ssl_private_key"`
 	CertificateFile            string                  `yaml:"ssl_certificate_file"`
 	Proxy                      string                  `yaml:"proxy"`
@@ -46,7 +47,7 @@ type CachingRules struct {
 }
 
 func LoadConfig(path string) (*Config, error) {
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 
 	if err != nil {
 		return nil, err

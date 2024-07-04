@@ -101,6 +101,9 @@ func CreateCache() (*Cache, error) {
 
 				olo.Debug("prefillCache: Added %s for %s back into in-memory cache with size of %d", path, cachedItem, size)
 			} else {
+				mutex.Lock()
+				memory[cachedItem] = CacheMemoryItem{content: nil, loadedAt: time.Now()}
+				mutex.Unlock()
 				olo.Debug("prefillCache: Added %s for %s back into known cache items, but will only read it from files as size is %d", path, cachedItem, fi.Size())
 			}
 		}
@@ -153,7 +156,7 @@ func (c *Cache) has(requestedURL string) (*sync.Mutex, bool) {
 		c.mutex.Lock()
 	}
 
-	// fmt.Printf("%+v\n", c.cacheMemoryItems)
+	// fmt.Printf("Cache.has() %+v\n", c.cacheMemoryItems)
 
 	// If a resource is in the shared cache, it can't be reserved. One can simply
 	// access it directly from the cache
