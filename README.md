@@ -1,4 +1,4 @@
-# tiny-http-proxy
+# pkgproxy
 
 Forked from https://github.com/hauke96/tiny-http-proxy.git
 Simple HTTP(S) caching proxy.
@@ -8,8 +8,8 @@ Main use case is to cache remote package repositories.
 Just clone this repo and run it:
 
 ```
-git clone https://github.com/xorpaul/tiny-http-proxy.git
-cd tiny-http-proxy
+git clone https://github.com/xorpaul/pkgproxy.git
+cd pkgproxy
 go run *.go
 ```
 
@@ -108,7 +108,7 @@ $ go run *.go
 [INFO]  config.go:72 | adding caching rule 'RPM Packages': regex:'.*\.rpm$' ttl:'8544h'
 [INFO]  config.go:77 | setting ttl to '8544h0m0s' for regex '.*\.rpm$'
 [DEBUG] main.go:60   | Config loaded
-[DEBUG] cache.go:70  | filepath.Walk'ing directory /home/xorpaul/dev/go/src/github.com/xorpaul/tiny-http-proxy/cache/
+[DEBUG] cache.go:70  | filepath.Walk'ing directory /home/xorpaul/dev/go/src/github.com/xorpaul/pkgproxy/cache/
 [DEBUG] main.go:63   | Cache initialized
 [INFO]  serve.go:47  | Listening on http://0.0.0.0:8080/
 [INFO]  serve.go:28  | Listening on https://0.0.0.0:8443/
