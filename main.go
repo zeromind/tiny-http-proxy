@@ -65,7 +65,9 @@ func main() {
 	olo.Debug("Cache initialized")
 
 	go serve()
-	go serveTLS()
+	if config.NoSSL != false {
+		go serveTLS()
+	}
 
 	// prometheus metrics server
 	http.Handle("/metrics", promhttp.Handler())

@@ -23,6 +23,7 @@ type Config struct {
 	Timeout                    int      `yaml:"timeout_in_s"`
 	ProxyNetworkStrings        []string `yaml:"reverse_proxy_networks"`
 	ProxyNetworks              []net.IPNet
+	NoSSL                      bool                    `yaml:"no_ssl"`
 	PrivateKey                 string                  `yaml:"ssl_private_key"`
 	CertificateFile            string                  `yaml:"ssl_certificate_file"`
 	Proxy                      string                  `yaml:"proxy"`
