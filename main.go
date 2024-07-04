@@ -214,7 +214,14 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	cacheURL := strings.TrimLeft(r.URL.String(), "/")
+	cacheURL := r.URL.String()
+	if strings.HasPrefix(r.URL.String(), "http://") {
+		cacheURL = strings.TrimPrefix(cacheURL, "http://")
+	}
+	if strings.HasPrefix(r.URL.String(), "https://") {
+		cacheURL = strings.TrimPrefix(cacheURL, "https://")
+	}
+	cacheURL = strings.TrimLeft(cacheURL, "/")
 	err = validateCacheURL(cacheURL)
 	if err != nil {
 		handleError(nil, err, w)
