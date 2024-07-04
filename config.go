@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-	"io/ioutil"
 	"net"
 	"net/url"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -47,7 +47,7 @@ type CachingRules struct {
 }
 
 func LoadConfig(path string) (*Config, error) {
-	file, err := ioutil.ReadFile(path)
+	file, err := os.ReadFile(path)
 
 	if err != nil {
 		return nil, err
